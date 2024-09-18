@@ -1,0 +1,72 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: eduardorvieira
+
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: NotesAPI
+
+provider:
+  name: aws
+  runtime: nodejs20.x  # Node.js 20.x does not have aws-sdk preinstalled
+  region: us-east-1
+
+  # Add IAM role statements to grant permissions to DynamoDB
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Scan
+      Resource:
+        - arn:aws:dynamodb:us-east-1:440744255785:table/Notes-dev
+
+functions:
+  createNote:
+    handler: handler.createNote
+    events:
+      - http:
+          path: note
+          method: post
+
+  getNote:
+    handler: handler.getNote
+    events:
+      - http:
+          path: note/{id}
+          method: get
+
+  updateNote:
+    handler: handler.updateNote
+    events:
+      - http:
+          path: note/{id}
+          method: put
+
+  deleteNote:
+    handler: handler.deleteNote
+    events:
+      - http:
+          path: note/{id}
+          method: delete
+
+  getAllNotes:
+    handler: handler.getAllNotes
+    events:
+      - http:
+          path: notes
+          method: get
+
+resources:
+  Resources:
+    NotesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Notes-dev
+        AttributeDefinitions:
+          - AttributeName: noteId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: noteId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
