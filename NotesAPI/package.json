@@ -10,5 +10,11 @@
   "description": "",
   "devDependencies": {
     "serverless": "^4.3.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.651.1",
+    "@aws-sdk/lib-dynamodb": "^3.651.1",
+    "aws-sdk": "^2.1691.0",
+    "dotenv": "^16.4.5"
   }
 }
